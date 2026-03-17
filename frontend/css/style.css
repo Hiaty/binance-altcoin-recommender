@@ -229,6 +229,55 @@ tr:hover {
 .badge-watch { background: rgba(210, 153, 34, 0.2); color: #d29922; }
 .badge-avoid { background: rgba(218, 54, 51, 0.2); color: #da3633; }
 
+/* 分页 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.pagination-info {
+    color: #8b949e;
+    font-size: 0.9em;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-page {
+    background: #21262d;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 40px;
+}
+
+.btn-page:hover {
+    background: #30363d;
+    border-color: #58a6ff;
+}
+
+.btn-page.active {
+    background: #238636;
+    border-color: #238636;
+    color: white;
+}
+
+.page-ellipsis {
+    color: #8b949e;
+    padding: 8px;
+}
+
 /* 页脚 */
 footer {
     text-align: center;

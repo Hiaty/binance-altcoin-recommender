@@ -1,17 +1,27 @@
 /**
- * 主应用逻辑
+ * 主应用逻辑 - 带分页功能
  */
+
+// 全局变量
+let currentData = [];
+let currentPage = 1;
+const itemsPerPage = 10;
 
 // 开始分析
 async function startAnalysis() {
     const btn = document.querySelector('.btn-primary');
     const loading = document.getElementById('loading');
     const btnText = document.getElementById('btnText');
+    const statusDiv = document.getElementById('statusMessage');
     
     // 显示加载状态
     loading.style.display = 'inline';
     btnText.textContent = '分析中...';
     btn.disabled = true;
+    if (statusDiv) {
+        statusDiv.textContent = '正在分析，请稍候...';
+        statusDiv.style.color = '#d29922';
+    }
     
     try {
         // 获取参数
@@ -25,22 +35,36 @@ async function startAnalysis() {
         const result = await api.analyze(params);
         
         if (result.success) {
+            // 保存数据
+            currentData = result.data;
+            currentPage = 1;
+            
             // 更新统计
             updateStats(result.stats);
             
-            // 更新表格
-            updateTable(result.data);
+            // 更新表格（带分页）
+            updateTableWithPagination(currentData);
             
             // 更新时间
             document.getElementById('updateTime').textContent = new Date().toLocaleString();
             
-            alert('分析完成！');
+            // 显示成功状态（不弹窗）
+            if (statusDiv) {
+                statusDiv.textContent = `分析完成！共 ${currentData.length} 个币种`;
+                statusDiv.style.color = '#238636';
+            }
         } else {
-            alert('分析失败: ' + result.error);
+            if (statusDiv) {
+                statusDiv.textContent = '分析失败: ' + result.error;
+                statusDiv.style.color = '#da3633';
+            }
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('请求失败，请检查后端服务是否启动');
+        if (statusDiv) {
+            statusDiv.textContent = '请求失败，请检查后端服务是否启动';
+            statusDiv.style.color = '#da3633';
+        }
     } finally {
         // 恢复按钮状态
         loading.style.display = 'none';
@@ -57,10 +81,25 @@ function updateStats(stats) {
     document.getElementById('statWhale').textContent = stats.whale;
 }
 
+// 更新表格（带分页）
+function updateTableWithPagination(data) {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageData = data.slice(start, end);
+    
+    updateTable(pageData);
+    updatePagination(data.length);
+}
+
 // 更新表格
 function updateTable(data) {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
+    
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="13" class="empty">暂无数据</td></tr>';
+        return;
+    }
     
     data.forEach(item => {
         const row = document.createElement('tr');
@@ -89,9 +128,72 @@ function updateTable(data) {
     });
 }
 
+// 更新分页
+function updatePagination(totalItems) {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const paginationDiv = document.getElementById('pagination');
+    
+    if (!paginationDiv) return;
+    
+    let html = `
+        <div class="pagination-info">
+            第 ${currentPage} / ${totalPages} 页，共 ${totalItems} 条
+        </div>
+        <div class="pagination-buttons">
+    `;
+    
+    if (currentPage > 1) {
+        html += `<button onclick="goToPage(${currentPage - 1})" class="btn-page">上一页</button>`;
+    }
+    
+    // 显示页码
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+            html += `<button class="btn-page active">${i}</button>`;
+        } else if (i <= 3 || i >= totalPages - 2 || Math.abs(i - currentPage) <= 1) {
+            html += `<button onclick="goToPage(${i})" class="btn-page">${i}</button>`;
+        } else if (Math.abs(i - currentPage) === 2) {
+            html += `<span class="page-ellipsis">...</span>`;
+        }
+    }
+    
+    if (currentPage < totalPages) {
+        html += `<button onclick="goToPage(${currentPage + 1})" class="btn-page">下一页</button>`;
+    }
+    
+    html += '</div>';
+    paginationDiv.innerHTML = html;
+}
+
+// 跳转到指定页
+function goToPage(page) {
+    currentPage = page;
+    updateTableWithPagination(currentData);
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
     console.log('币安山寨币智能推荐系统已加载');
+    
+    // 添加状态消息区域
+    const controls = document.querySelector('.controls');
+    if (controls) {
+        const statusDiv = document.createElement('div');
+        statusDiv.id = 'statusMessage';
+        statusDiv.style.marginTop = '10px';
+        statusDiv.style.textAlign = 'center';
+        statusDiv.style.fontWeight = 'bold';
+        controls.appendChild(statusDiv);
+    }
+    
+    // 添加分页区域
+    const tableContainer = document.querySelector('.table-container');
+    if (tableContainer) {
+        const paginationDiv = document.createElement('div');
+        paginationDiv.id = 'pagination';
+        paginationDiv.className = 'pagination';
+        tableContainer.after(paginationDiv);
+    }
     
     // 检查后端服务状态
     fetch('/health')
