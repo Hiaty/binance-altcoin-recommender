@@ -143,33 +143,31 @@ function updatePagination(totalItems) {
     `;
     
     if (currentPage > 1) {
-        html += `<button onclick="goToPage(${currentPage - 1})" class="btn-page">上一页</button>`;
+        html += `<button onclick="window.goToPage(${currentPage - 1})" class="btn-page">上一页</button>`;
     }
     
-    // 显示页码
+    // 显示页码（简化：只显示所有页码，避免...导致的混乱）
     for (let i = 1; i <= totalPages; i++) {
         if (i === currentPage) {
             html += `<button class="btn-page active">${i}</button>`;
-        } else if (i <= 3 || i >= totalPages - 2 || Math.abs(i - currentPage) <= 1) {
-            html += `<button onclick="goToPage(${i})" class="btn-page">${i}</button>`;
-        } else if (Math.abs(i - currentPage) === 2) {
-            html += `<span class="page-ellipsis">...</span>`;
+        } else {
+            html += `<button onclick="window.goToPage(${i})" class="btn-page">${i}</button>`;
         }
     }
     
     if (currentPage < totalPages) {
-        html += `<button onclick="goToPage(${currentPage + 1})" class="btn-page">下一页</button>`;
+        html += `<button onclick="window.goToPage(${currentPage + 1})" class="btn-page">下一页</button>`;
     }
     
     html += '</div>';
     paginationDiv.innerHTML = html;
 }
 
-// 跳转到指定页
-function goToPage(page) {
+// 跳转到指定页（绑定到window对象确保全局可用）
+window.goToPage = function(page) {
     currentPage = page;
     updateTableWithPagination(currentData);
-}
+};
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
