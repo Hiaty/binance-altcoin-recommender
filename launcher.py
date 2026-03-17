@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 币安山寨币智能推荐系统 - 启动器
 打包版本
@@ -13,7 +14,7 @@ from threading import Thread
 
 def check_and_install():
     """检查并安装依赖"""
-    print("[1/3] 检查依赖...")
+    print("[1/3] Checking dependencies...")
     try:
         # 使用内嵌方式安装
         import requests
@@ -21,25 +22,25 @@ def check_and_install():
         import flask_cors
         import numpy
         from PIL import Image
-        print("[✓] 依赖已就绪")
+        print("[OK] Dependencies ready")
         return True
     except ImportError:
-        print("[✗] 缺少依赖，正在安装...")
+        print("[WARNING] Missing dependencies, installing...")
         try:
             subprocess.check_call([
                 sys.executable, "-m", "pip", "install", 
                 "requests", "flask", "flask-cors", "numpy", "pillow",
                 "-q", "--user"
             ])
-            print("[✓] 依赖安装完成")
+            print("[OK] Dependencies installed")
             return True
         except Exception as e:
-            print(f"[✗] 安装失败: {e}")
+            print(f"[ERROR] Installation failed: {e}")
             return False
 
 def start_server():
     """启动服务器"""
-    print("[2/3] 启动服务...")
+    print("[2/3] Starting server...")
     try:
         # 获取当前目录
         if getattr(sys, 'frozen', False):
@@ -62,47 +63,47 @@ def start_server():
         time.sleep(3)
         
         if process.poll() is None:
-            print("[✓] 服务已启动")
+            print("[OK] Server started")
             return process
         else:
             stdout, stderr = process.communicate()
-            print(f"[✗] 启动失败: {stderr}")
+            print(f"[ERROR] Failed to start: {stderr}")
             return None
     except Exception as e:
-        print(f"[✗] 错误: {e}")
+        print(f"[ERROR] Error: {e}")
         return None
 
 def open_browser():
     """打开浏览器"""
     time.sleep(4)
-    print("[4/4] 打开浏览器...")
+    print("[4/4] Opening browser...")
     webbrowser.open("http://localhost:5000")
 
 def main():
     print("=" * 60)
-    print("  币安山寨币智能推荐系统")
+    print("  Binance Altcoin Recommender System")
     print("=" * 60)
     print()
     
     if not check_and_install():
-        input("按回车键退出...")
+        input("Press Enter to exit...")
         return
     
     print()
     
     server = start_server()
     if not server:
-        input("按回车键退出...")
+        input("Press Enter to exit...")
         return
     
     print()
-    print("[3/4] 启动成功!")
+    print("[3/4] Started successfully!")
     print()
     print("=" * 60)
-    print("  访问地址: http://localhost:5000")
+    print("  Access: http://localhost:5000")
     print("=" * 60)
     print()
-    print("  按 Ctrl+C 停止服务")
+    print("  Press Ctrl+C to stop")
     print("=" * 60)
     print()
     
@@ -111,9 +112,9 @@ def main():
     try:
         server.wait()
     except KeyboardInterrupt:
-        print("\n正在停止...")
+        print("\nStopping...")
         server.terminate()
-        print("已停止")
+        print("Stopped")
 
 if __name__ == "__main__":
     main()
