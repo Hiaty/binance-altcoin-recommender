@@ -3,13 +3,21 @@
 Flask REST API
 """
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, send_file
 from flask_cors import CORS
 import os
 import sys
 
+# 获取基础路径（兼容打包后的路径）
+if getattr(sys, 'frozen', False):
+    # 打包后的路径
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    # 开发环境路径
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # 添加项目路径
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(BASE_DIR, 'backend'))
 
 from api.analyze import analyze_bp
 from api.data import data_bp
@@ -17,8 +25,10 @@ from config import Config
 
 def create_app():
     """创建Flask应用"""
+    frontend_dir = os.path.join(BASE_DIR, 'frontend')
+    
     app = Flask(__name__, 
-                static_folder='../frontend',
+                static_folder=frontend_dir,
                 static_url_path='')
     
     # 配置
@@ -40,7 +50,15 @@ def create_app():
     @app.route('/')
     def index():
         """首页"""
-        return send_from_directory('../frontend', 'index.html')
+        index_file = os.path.join(frontend_dir, 'index.html')
+        if os.path.exists(index_file):
+            return send_file(index_file)
+        else:
+            return jsonify({
+                'error': 'Frontend not found',
+                'path': frontend_dir,
+                'base_dir': BASE_DIR
+            }), 404
     
     @app.route('/health')
     def health():
@@ -48,7 +66,8 @@ def create_app():
         return jsonify({
             'status': 'ok',
             'service': 'binance-altcoin-recommender',
-            'version': '1.0.0'
+            'version': '1.0.0',
+            'base_dir': BASE_DIR
         })
     
     @app.errorhandler(404)
@@ -67,7 +86,7 @@ if __name__ == '__main__':
     print("币安山寨币智能推荐系统 - 后端服务")
     print("=" * 60)
     print(f"服务地址: http://{Config.HOST}:{Config.PORT}")
-    print(f"API文档: http://{Config.HOST}:{Config.PORT}/api/docs")
+    print(f"基础目录: {BASE_DIR}")
     print("=" * 60)
     app.run(
         host=Config.HOST,
