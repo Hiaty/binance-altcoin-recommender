@@ -115,11 +115,27 @@ def fetch_altcoins(min_market_cap=30000000, count=20):
             
             volume_24h = float(token.get("volume24h") or 0)
             change_24h = float(token.get("percentChange24h") or 0)
+            liquidity = float(token.get("liquidity") or 0)
             
             # 筛选条件
             # 市值范围：min_market_cap 到 10亿（排除BTC、ETH等大市值币种）
             max_market_cap = 1000000000  # 10亿上限
-            if min_market_cap <= market_cap <= max_market_cap and volume_24h > 500000 and change_24h > -50:
+            
+            # 流动性筛选条件（排除死币）：
+            # 1. 24h交易量 > 50万
+            # 2. 流动性 > 10万
+            # 3. 24h涨跌幅在 -90% ~ +1000% 之间（排除极端情况）
+            min_volume = 500000  # 50万
+            min_liquidity = 100000  # 10万
+            
+            is_active = (
+                min_market_cap <= market_cap <= max_market_cap and
+                volume_24h > min_volume and
+                liquidity > min_liquidity and
+                -90 <= change_24h <= 1000
+            )
+            
+            if is_active:
                 token_info = {
                     "name": token.get("name"),
                     "symbol": token.get("symbol"),
