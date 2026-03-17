@@ -28,13 +28,16 @@ def check_port(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(('localhost', port)) == 0
 
-def wait_for_server(port, timeout=30):
+def wait_for_server(port, timeout=60):
     """等待服务器启动"""
+    print(f"  Waiting for server (timeout: {timeout}s)...")
     start_time = time.time()
     while time.time() - start_time < timeout:
         if check_port(port):
             return True
-        time.sleep(1)
+        time.sleep(2)
+        print("  .", end="", flush=True)
+    print()
     return False
 
 def open_browser_once():
@@ -100,13 +103,16 @@ def main():
         )
         
         # 等待服务器启动
-        if wait_for_server(5000):
+        if wait_for_server(5000, timeout=60):
             print("[OK] Server started")
         else:
             print("[ERROR] Server failed to start")
-            stdout, stderr = process.communicate(timeout=1)
-            if stderr:
-                print(f"Error: {stderr}")
+            try:
+                stdout, stderr = process.communicate(timeout=5)
+                if stderr:
+                    print(f"Error: {stderr}")
+            except:
+                pass
             process.terminate()
             input("Press Enter to exit...")
             return
