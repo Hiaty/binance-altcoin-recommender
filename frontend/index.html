@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>币安山寨币智能推荐系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">B</div>
+                <h1>币安山寨币智能推荐系统</h1>
+                <div class="logo">B</div>
+            </div>
+            <p class="subtitle">市值3000万+活跃币种 | AI智能筛选 | K线形态分析 | 庄家识别</p>
+        </header>
+
+        <div class="warning">
+            ⚠️ 风险提示：本分析仅供参考，不构成投资建议。加密货币投资有风险，入市需谨慎。
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>筛选数量:</label>
+                <input type="number" id="count" value="20" min="5" max="50">
+            </div>
+            <div class="control-group">
+                <label>最小市值(万):</label>
+                <input type="number" id="minCap" value="3000" min="1000" max="10000">
+            </div>
+            <div class="control-group">
+                <label>排序方式:</label>
+                <select id="sortBy">
+                    <option value="marketCap">市值从低到高</option>
+                    <option value="buyScore">推荐评分</option>
+                    <option value="weekChange">本周涨幅</option>
+                    <option value="turnover">换手率</option>
+                </select>
+            </div>
+            <button onclick="startAnalysis()" class="btn-primary">
+                <span class="loading" id="loading" style="display:none;">⏳</span>
+                <span id="btnText">🔄 开始分析</span>
+            </button>
+        </div>
+
+        <div class="stats-cards" id="statsCards">
+            <div class="stat-card recommend">
+                <div class="stat-value" id="statRecommend">0</div>
+                <div class="stat-label">推荐购买</div>
+            </div>
+            <div class="stat-card watch">
+                <div class="stat-value" id="statWatch">0</div>
+                <div class="stat-label">建议观望</div>
+            </div>
+            <div class="stat-card avoid">
+                <div class="stat-value" id="statAvoid">0</div>
+                <div class="stat-label">不推荐</div>
+            </div>
+            <div class="stat-card whale">
+                <div class="stat-value" id="statWhale">0</div>
+                <div class="stat-label">强庄币</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h3>📊 指标说明</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <span class="label">历史最大回调:</span>
+                    <span class="desc">从历史最高点下跌的幅度，数值越大说明回调越充分</span>
+                </div>
+                <div class="legend-item">
+                    <span class="label">底部最大反弹:</span>
+                    <span class="desc">从历史最低点上涨的幅度，反映底部反弹力度</span>
+                </div>
+                <div class="legend-item">
+                    <span class="label">换手率:</span>
+                    <span class="desc">24h交易量/市值，5-50%为健康区间</span>
+                </div>
+                <div class="legend-item">
+                    <span class="label">持仓集中度:</span>
+                    <span class="desc">前10大持有者占比，>80%为高度控盘</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>代币</th>
+                        <th>市值(万)</th>
+                        <th>历史回调</th>
+                        <th>底部反弹</th>
+                        <th>换手率</th>
+                        <th>本周涨跌</th>
+                        <th>本月涨跌</th>
+                        <th>持仓集中度</th>
+                        <th>日线形态</th>
+                        <th>分析点评</th>
+                        <th>强庄币</th>
+                        <th>推荐评级</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="13" class="empty">点击"开始分析"按钮获取数据</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer>
+            <p>数据来源: 币安Web3 API | <span id="updateTime">-</span></p>
+            <p>币安山寨币智能推荐系统 v1.0 - 让AI帮你发现价值币种</p>
+        </footer>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
