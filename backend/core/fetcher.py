@@ -124,17 +124,17 @@ def fetch_altcoins(min_market_cap=30000000, count=20):
             max_market_cap = 1000000000  # 10亿上限
             
             # 流动性筛选条件（排除死币）：
-            # 1. 24h交易量 > 50万
-            # 2. 流动性 > 10万
-            # 3. 24h涨跌幅在 -90% ~ +1000% 之间（排除极端情况）
-            min_volume = 500000  # 50万
-            min_liquidity = 100000  # 10万
+            # 1. 24h交易量 > 10万（降低门槛）
+            # 2. 流动性 > 5万（降低门槛）
+            # 3. 24h涨跌幅在 -95% ~ +2000% 之间（排除极端情况）
+            min_volume = 100000  # 10万
+            min_liquidity = 50000  # 5万
             
             is_active = (
                 min_market_cap <= market_cap <= max_market_cap and
                 volume_24h > min_volume and
                 liquidity > min_liquidity and
-                -90 <= change_24h <= 1000
+                -95 <= change_24h <= 2000
             )
             
             if is_active:
@@ -157,21 +157,13 @@ def fetch_altcoins(min_market_cap=30000000, count=20):
         
         time.sleep(0.2)
     
-    # 先按市值排序，然后添加一些随机性，避免总是同样的币
-    import random
+    # 先按市值排序
     all_tokens.sort(key=lambda x: x["marketCap"])
     
-    # 如果币种数量超过请求的count，随机选择一部分
-    if len(all_tokens) > count:
-        # 保留市值最小的前count*2个，然后从中随机选择
-        candidates = all_tokens[:count*2]
-        selected = random.sample(candidates, min(count, len(candidates)))
-        # 再按市值排序
-        selected.sort(key=lambda x: x["marketCap"])
-    else:
-        selected = all_tokens[:count]
+    # 取前count个（如果不够就取全部）
+    selected = all_tokens[:count]
     
-    print(f"找到 {len(selected)} 个符合条件的代币")
+    print(f"找到 {len(all_tokens)} 个符合条件的代币，将分析前 {len(selected)} 个")
     
     # 获取详细数据
     results = []
