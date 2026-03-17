@@ -98,7 +98,9 @@ def fetch_altcoins(min_market_cap=30000000, count=20):
     print(f"正在抓取市值{min_market_cap/10000:.0f}万~10亿的活跃山寨币...")
     
     all_tokens = []
-    keywords = ["ai", "meme", "game", "dao", "meta", "nft", "defi", "swap", "pepe", "doge"]
+    keywords = ["ai", "meme", "game", "dao", "meta", "nft", "defi", "swap", "pepe", "doge", 
+                "cat", "frog", "elon", "shib", "moon", "rocket", "baby", "fair", "safe",
+                "token", "coin", "crypto", "web3", "chain", "finance", "money"]
     
     for kw in keywords:
         tokens = search_tokens(keyword=kw, order_by="volume24h")
@@ -155,9 +157,19 @@ def fetch_altcoins(min_market_cap=30000000, count=20):
         
         time.sleep(0.2)
     
-    # 按市值排序，取前N个
+    # 先按市值排序，然后添加一些随机性，避免总是同样的币
+    import random
     all_tokens.sort(key=lambda x: x["marketCap"])
-    selected = all_tokens[:count]
+    
+    # 如果币种数量超过请求的count，随机选择一部分
+    if len(all_tokens) > count:
+        # 保留市值最小的前count*2个，然后从中随机选择
+        candidates = all_tokens[:count*2]
+        selected = random.sample(candidates, min(count, len(candidates)))
+        # 再按市值排序
+        selected.sort(key=lambda x: x["marketCap"])
+    else:
+        selected = all_tokens[:count]
     
     print(f"找到 {len(selected)} 个符合条件的代币")
     
