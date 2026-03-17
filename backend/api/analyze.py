@@ -1,62 +1,23 @@
 """
-分析接口
+分析接口 - 真实数据版本
 """
 
 from flask import Blueprint, request, jsonify
-import json
+import sys
 import os
+
+# 添加core到路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from core.fetcher import fetch_altcoins
+from core.analyzer import analyze_all
 from datetime import datetime
 
 analyze_bp = Blueprint('analyze', __name__)
 
-# 模拟分析数据（实际应从core.analyzer导入）
-def get_mock_analysis():
-    return [
-        {
-            "rank": 1,
-            "symbol": "POPCAT",
-            "name": "Popcat",
-            "market_cap": 57194150.0,
-            "price": 0.05836510430818849,
-            "max_drawdown": 81.1982183573407,
-            "max_rebound": 45.41354645077212,
-            "turnover_rate": 1.1390492272001882,
-            "week_change": 14.760407448169227,
-            "month_change": 9.20429020567846,
-            "concentration": 42.20071828219829,
-            "net_inflow": 29942.33253643976,
-            "daily_pattern": "三连阳, 均线金叉",
-            "weekly_pattern": "三连阳, 均线死叉, 缩量",
-            "pattern_strength": 85,
-            "analysis": "【三连阳, 均线金叉】暂无强庄控盘迹象。优势: 日线强势;回调充分。",
-            "is_whale": False,
-            "whale_signals": [],
-            "recommendation": "推荐",
-            "buy_score": 55
-        },
-        {
-            "rank": 2,
-            "symbol": "BabyDoge",
-            "name": "Baby Doge Coin",
-            "market_cap": 90318640.0,
-            "price": 4.4575698432e-10,
-            "max_drawdown": 69.71238197569922,
-            "max_rebound": 26.422704508977834,
-            "turnover_rate": 0.9113534489295229,
-            "week_change": 10.037531203406456,
-            "month_change": 9.839788746742865,
-            "concentration": 25.138726771080844,
-            "net_inflow": 13931.626603821933,
-            "daily_pattern": "三连阳, 均线金叉",
-            "weekly_pattern": "三连阳, 均线死叉",
-            "pattern_strength": 85,
-            "analysis": "【三连阳, 均线金叉】暂无强庄控盘迹象。优势: 日线强势;回调充分。",
-            "is_whale": False,
-            "whale_signals": [],
-            "recommendation": "推荐",
-            "buy_score": 55
-        }
-    ]
+# 缓存数据
+cached_data = None
+cached_time = None
 
 @analyze_bp.route('/analyze', methods=['POST'])
 def analyze():
@@ -67,47 +28,80 @@ def analyze():
         min_cap = data.get('minCap', 3000)
         sort_by = data.get('sortBy', 'marketCap')
         
-        # 获取分析结果（实际应调用core.analyzer）
-        results = get_mock_analysis()
+        print(f"开始分析: {count}个币, 最小市值{min_cap}万")
+        
+        # 抓取数据
+        tokens_data = fetch_altcoins(
+            min_market_cap=min_cap * 10000,  # 转换为实际数值
+            count=count
+        )
+        
+        if not tokens_data:
+            return jsonify({
+                'success': False,
+                'error': '数据抓取失败，请检查网络连接'
+            }), 500
+        
+        # 分析数据
+        analysis_results = analyze_all(tokens_data)
+        
+        # 根据排序方式排序
+        if sort_by == 'buyScore':
+            analysis_results.sort(key=lambda x: x.get('buy_score', 0), reverse=True)
+        elif sort_by == 'weekChange':
+            analysis_results.sort(key=lambda x: x.get('week_change', 0), reverse=True)
+        elif sort_by == 'turnover':
+            analysis_results.sort(key=lambda x: x.get('turnover_rate', 0), reverse=True)
+        
+        # 更新排名
+        for i, item in enumerate(analysis_results, 1):
+            item['rank'] = i
         
         # 统计
         stats = {
-            'total': len(results),
-            'recommend': sum(1 for r in results if r.get('recommendation') == '推荐'),
-            'watch': sum(1 for r in results if r.get('recommendation') == '观望'),
-            'avoid': sum(1 for r in results if r.get('recommendation') == '不推荐'),
-            'whale': sum(1 for r in results if r.get('is_whale', False))
+            'total': len(analysis_results),
+            'recommend': sum(1 for r in analysis_results if r.get('recommendation') == '推荐'),
+            'watch': sum(1 for r in analysis_results if r.get('recommendation') == '观望'),
+            'avoid': sum(1 for r in analysis_results if r.get('recommendation') == '不推荐'),
+            'whale': sum(1 for r in analysis_results if r.get('is_whale', False))
         }
         
         return jsonify({
             'success': True,
-            'data': results,
+            'data': analysis_results,
             'stats': stats,
             'timestamp': datetime.now().isoformat()
         })
+        
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        import traceback
+        print(f"分析失败: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @analyze_bp.route('/results', methods=['GET'])
 def get_results():
-    """获取分析结果"""
-    try:
-        results = get_mock_analysis()
-        return jsonify({
-            'success': True,
-            'data': results
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+    """获取最新分析结果"""
+    # 这里应该从缓存或数据库读取
+    return jsonify({
+        'success': True,
+        'message': '请使用POST /analyze接口获取实时数据'
+    })
 
 @analyze_bp.route('/chart', methods=['GET'])
 def generate_chart():
     """生成图表"""
     try:
+        # 这里可以调用生成图表的函数
         return jsonify({
             'success': True,
-            'message': '图表生成成功',
-            'url': '/static/chart.png'
+            'message': '图表功能开发中'
         })
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500

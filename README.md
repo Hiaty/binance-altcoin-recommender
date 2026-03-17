@@ -1,69 +1,122 @@
-# 币安山寨币智能推荐系统 - 完整版
+# 🚀 币安山寨币智能推荐系统（完整版）
 
-## 项目结构
+基于币安Web3 API的智能加密货币分析工具，**下载即可运行**，自动抓取实时数据，AI智能推荐。
 
-```
-binance-altcoin-recommender/
-├── backend/                    # 后端代码
-│   ├── app.py                 # Flask主应用
-│   ├── api/
-│   │   ├── __init__.py
-│   │   ├── analyze.py         # 分析接口
-│   │   └── data.py            # 数据接口
-│   ├── core/
-│   │   ├── __init__.py
-│   │   ├── fetcher.py         # 数据抓取
-│   │   ├── analyzer.py        # 数据分析
-│   │   └── chart.py           # 图表生成
-│   ├── utils/
-│   │   ├── __init__.py
-│   │   └── helpers.py         # 工具函数
-│   ├── config.py              # 配置文件
-│   └── requirements.txt       # 后端依赖
-├── frontend/                   # 前端代码
-│   ├── index.html             # 主页面
-│   ├── css/
-│   │   └── style.css          # 样式文件
-│   ├── js/
-│   │   ├── app.js             # 主应用逻辑
-│   │   ├── api.js             # API调用
-│   │   └── charts.js          # 图表组件
-│   └── assets/
-│       └── logo.png           # 资源文件
-├── data/                       # 数据目录
-├── docs/                       # 文档
-├── tests/                      # 测试代码
-├── README.md                   # 项目说明
-├── LICENSE                     # 许可证
-└── start.py                    # 一键启动脚本
+## ✨ 功能特点
+
+- 🤖 **全自动数据抓取** - 实时从币安API获取数据
+- 📊 **K线形态分析** - 自动识别金叉、突破等信号
+- 🎯 **庄家识别** - 检测持仓集中度、异常换手
+- 💡 **智能推荐** - 多维度评分，推荐/观望/不推荐
+- 🎨 **Web可视化界面** - 美观的交互式UI
+
+## 🚀 快速开始（3步运行）
+
+### 第1步：下载代码
+
+```bash
+git clone https://github.com/guiguzibeneben/binance-altcoin-recommender.git
+cd binance-altcoin-recommender
 ```
 
-## 快速开始
+### 第2步：安装依赖
 
-### 1. 安装依赖
 ```bash
 pip install -r backend/requirements.txt
 ```
 
-### 2. 启动服务
+### 第3步：启动系统
+
+**Windows用户：**
+双击运行 `启动.bat`
+
+**Mac/Linux用户：**
 ```bash
 python start.py
 ```
 
-### 3. 访问系统
-浏览器打开: http://localhost:5000
+启动后会自动打开浏览器访问：`http://localhost:5000`
 
-## API文档
+---
 
-### 分析接口
-- `POST /api/analyze` - 执行币种分析
-- `GET /api/results` - 获取分析结果
-- `GET /api/chart` - 生成分析图表
+## 📖 使用指南
 
-## 技术栈
-- 后端: Flask + Python
-- 前端: HTML5 + CSS3 + JavaScript
-- 数据: 币安Web3 API
+### 界面操作
 
-## 许可证
+1. **设置参数**
+   - 筛选数量：选择分析多少个币种（5-50个）
+   - 最小市值：设置最小市值筛选（1000万-1亿）
+   - 排序方式：按市值/评分/涨幅/换手率排序
+
+2. **开始分析**
+   - 点击「🔄 开始分析」按钮
+   - 等待3-5分钟获取数据和分析
+   - 查看统计卡片和详细表格
+
+3. **查看结果**
+   - **推荐购买**：综合评分40+，建议关注
+   - **建议观望**：评分20-40，需进一步观察
+   - **不推荐**：评分<20，风险较高
+   - **强庄币**：检测到庄家控盘迹象
+
+### 分析指标说明
+
+| 指标 | 说明 | 健康范围 |
+|------|------|----------|
+| 历史最大回调 | 从最高点下跌幅度 | >50%为回调充分 |
+| 底部最大反弹 | 从最低点上涨幅度 | 越高越好 |
+| 换手率 | 24h交易量/市值 | 5-50%为健康 |
+| 持仓集中度 | 前10大持有者占比 | <70%为分散 |
+| 资金净流入 | 买入-卖出 | 正值为流入 |
+
+---
+
+## 🏗️ 项目结构
+
+```
+binance-altcoin-recommender/
+├── backend/                 # 后端代码
+│   ├── app.py              # Flask主应用
+│   ├── api/                # API接口
+│   │   ├── analyze.py      # 分析接口
+│   │   └── data.py         # 数据接口
+│   ├── core/               # 核心模块
+│   │   ├── fetcher.py      # 数据抓取
+│   │   └── analyzer.py     # 数据分析
+│   └── requirements.txt    # 依赖列表
+├── frontend/                # 前端代码
+│   ├── index.html          # 主页面
+│   ├── css/style.css       # 样式
+│   └── js/                 # JavaScript
+├── start.py                # 启动脚本
+└── README.md               # 项目说明
+```
+
+---
+
+## 🔧 系统要求
+
+- Python 3.8+
+- 网络连接（访问币安API）
+- 现代浏览器（Chrome/Firefox/Edge）
+
+---
+
+## ⚠️ 免责声明
+
+**重要提示：**
+
+1. 本系统仅供参考，不构成投资建议
+2. 加密货币投资有风险，入市需谨慎
+3. 请根据自身风险承受能力独立决策
+4. 过往表现不代表未来收益
+
+---
+
+## 📄 许可证
+
 MIT License
+
+---
+
+**Made with ❤️ by OpenClaw AI Assistant**
