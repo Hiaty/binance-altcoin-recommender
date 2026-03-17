@@ -95,15 +95,7 @@ def fetch_altcoins(min_market_cap=30000000, count=20):
     Returns:
         list: 币种数据列表
     """
-    # 大市值币种黑名单（市值超过10亿的知名币种）
-    blacklist = {
-        'BTC', 'ETH', 'USDT', 'USDC', 'BNB', 'XRP', 'ADA', 'DOGE', 
-        'SOL', 'TRX', 'DOT', 'MATIC', 'SHIB', 'LTC', 'AVAX', 'UNI',
-        'LINK', 'ETC', 'XLM', 'BCH', 'ALGO', 'VET', 'FIL', 'THETA',
-        'XTZ', 'EOS', 'AAVE', 'MKR', 'CAKE', 'AXS', 'SAND', 'MANA'
-    }
-    
-    print(f"正在抓取市值{min_market_cap/10000:.0f}万+的活跃山寨币...")
+    print(f"正在抓取市值{min_market_cap/10000:.0f}万~10亿的活跃山寨币...")
     
     all_tokens = []
     keywords = ["ai", "meme", "game", "dao", "meta", "nft", "defi", "swap", "pepe", "doge"]
@@ -141,8 +133,8 @@ def fetch_altcoins(min_market_cap=30000000, count=20):
                     "liquidity": float(token.get("liquidity") or 0)
                 }
                 
-                # 去重和黑名单检查
-                if token_info["symbol"] not in blacklist and not any(t["contractAddress"] == token_info["contractAddress"] for t in all_tokens):
+                # 去重
+                if not any(t["contractAddress"] == token_info["contractAddress"] for t in all_tokens):
                     all_tokens.append(token_info)
         
         time.sleep(0.2)
