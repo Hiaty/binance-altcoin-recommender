@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 币安山寨币智能推荐系统 - 启动器
+兼容打包版本
 """
 
 import subprocess
@@ -11,6 +12,16 @@ import webbrowser
 import time
 import socket
 from threading import Thread
+
+def get_resource_path(relative_path):
+    """获取资源文件路径（兼容开发和打包环境）"""
+    if getattr(sys, 'frozen', False):
+        # PyInstaller打包后的路径
+        base_path = sys._MEIPASS
+    else:
+        # 开发环境路径
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
 
 def check_port(port):
     """检查端口是否被占用"""
@@ -51,13 +62,15 @@ def main():
         import flask
         import requests
         import numpy
+        from PIL import Image
         print("[OK] Dependencies ready")
     except ImportError:
         print("[WARNING] Installing dependencies...")
         try:
+            backend_req = get_resource_path('backend/requirements.txt')
             subprocess.check_call([
                 sys.executable, "-m", "pip", "install", 
-                "-r", "backend/requirements.txt", "-q"
+                "-r", backend_req, "-q"
             ])
             print("[OK] Dependencies installed")
         except Exception as e:
@@ -68,13 +81,12 @@ def main():
     print()
     print("[2/3] Starting server...")
     
-    # 获取路径
-    if getattr(sys, 'frozen', False):
-        base_path = os.path.dirname(sys.executable)
-    else:
-        base_path = os.path.dirname(os.path.abspath(__file__))
+    # 获取后端路径
+    backend_path = get_resource_path('backend/app.py')
+    base_path = get_resource_path('.')
     
-    backend_path = os.path.join(base_path, 'backend', 'app.py')
+    # 设置环境变量，让后端能找到资源
+    os.environ['BASE_DIR'] = base_path
     
     # 启动服务器
     try:
@@ -83,7 +95,8 @@ def main():
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            cwd=base_path
+            cwd=base_path,
+            env=os.environ
         )
         
         # 等待服务器启动
@@ -91,12 +104,17 @@ def main():
             print("[OK] Server started")
         else:
             print("[ERROR] Server failed to start")
+            stdout, stderr = process.communicate(timeout=1)
+            if stderr:
+                print(f"Error: {stderr}")
             process.terminate()
             input("Press Enter to exit...")
             return
         
     except Exception as e:
         print(f"[ERROR] {e}")
+        import traceback
+        traceback.print_exc()
         input("Press Enter to exit...")
         return
     

@@ -9,9 +9,12 @@ import os
 import sys
 
 # 获取基础路径（兼容打包后的路径）
-if getattr(sys, 'frozen', False):
-    # 打包后的路径
-    BASE_DIR = os.path.dirname(sys.executable)
+if os.environ.get('BASE_DIR'):
+    # 从环境变量获取（打包后）
+    BASE_DIR = os.environ.get('BASE_DIR')
+elif getattr(sys, 'frozen', False):
+    # PyInstaller打包后的路径
+    BASE_DIR = sys._MEIPASS
 else:
     # 开发环境路径
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,9 +22,15 @@ else:
 # 添加项目路径
 sys.path.append(os.path.join(BASE_DIR, 'backend'))
 
-from api.analyze import analyze_bp
-from api.data import data_bp
-from config import Config
+try:
+    from api.analyze import analyze_bp
+    from api.data import data_bp
+    from config import Config
+except ImportError:
+    # 如果导入失败，尝试直接导入
+    from backend.api.analyze import analyze_bp
+    from backend.api.data import data_bp
+    from backend.config import Config
 
 def create_app():
     """创建Flask应用"""
@@ -54,10 +63,13 @@ def create_app():
         if os.path.exists(index_file):
             return send_file(index_file)
         else:
+            # 如果找不到文件，返回错误信息
             return jsonify({
                 'error': 'Frontend not found',
-                'path': frontend_dir,
-                'base_dir': BASE_DIR
+                'frontend_dir': frontend_dir,
+                'base_dir': BASE_DIR,
+                'exists': os.path.exists(frontend_dir),
+                'files': os.listdir(BASE_DIR) if os.path.exists(BASE_DIR) else 'N/A'
             }), 404
     
     @app.route('/health')
@@ -67,7 +79,8 @@ def create_app():
             'status': 'ok',
             'service': 'binance-altcoin-recommender',
             'version': '1.0.0',
-            'base_dir': BASE_DIR
+            'base_dir': BASE_DIR,
+            'frontend_dir': frontend_dir
         })
     
     @app.errorhandler(404)

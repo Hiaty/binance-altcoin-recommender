@@ -1,25 +1,49 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
+import os
+
+# 获取基础路径
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath('__file__'))
+
+block_cipher = None
 
 a = Analysis(
     ['launcher.py'],
-    pathex=[],
+    pathex=[BASE_DIR],
     binaries=[],
-    datas=[],
-    hiddenimports=[],
+    datas=[
+        ('backend', 'backend'),
+        ('frontend', 'frontend'),
+        ('images', 'images'),
+    ],
+    hiddenimports=[
+        'flask',
+        'flask_cors',
+        'requests',
+        'numpy',
+        'PIL',
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
     noarchive=False,
-    optimize=0,
 )
-pyz = PYZ(a.pure)
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
     pyz,
     a.scripts,
     a.binaries,
+    a.zipfiles,
     a.datas,
     [],
     name='BinanceRecommender',
