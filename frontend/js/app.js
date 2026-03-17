@@ -5,7 +5,7 @@
 // 全局变量
 let currentData = [];
 let currentPage = 1;
-const itemsPerPage = 10;
+const itemsPerPage = 5;
 
 // 开始分析
 async function startAnalysis() {
