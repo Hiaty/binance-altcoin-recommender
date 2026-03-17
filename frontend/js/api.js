@@ -9,10 +9,13 @@ const api = {
      * 执行分析
      */
     async analyze(params) {
-        const response = await fetch(`${API_BASE}/api/analyze`, {
+        // 添加时间戳防止缓存
+        const timestamp = new Date().getTime();
+        const response = await fetch(`${API_BASE}/api/analyze?t=${timestamp}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
             },
             body: JSON.stringify(params)
         });

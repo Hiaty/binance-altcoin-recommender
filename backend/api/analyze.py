@@ -28,7 +28,9 @@ def analyze():
         min_cap = data.get('minCap', 3000)
         sort_by = data.get('sortBy', 'marketCap')
         
-        print(f"开始分析: {count}个币, 最小市值{min_cap}万")
+        print(f"\n{'='*60}")
+        print(f"开始新的分析: {count}个币, 最小市值{min_cap}万")
+        print(f"{'='*60}")
         
         # 抓取数据
         tokens_data = fetch_altcoins(
