@@ -1,0 +1,340 @@
+{
+  "optimized_at": "2026-03-18T21:59:47.728767",
+  "best_winrate": 40.0,
+  "goal_winrate": 50,
+  "iterations": 61,
+  "weights": {
+    "w_pattern": 20,
+    "w_weekly": 15,
+    "w_drawdown": 15,
+    "w_turnover": 10,
+    "w_rs": 15,
+    "w_overbought": -15,
+    "w_overtrade": -15,
+    "thresh_rec": 51,
+    "thresh_watch": 20,
+    "rs_min": -5
+  },
+  "history": [
+    {
+      "iter": 41,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 14,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 42,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 53,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 43,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 22,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 44,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 16,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 45,
+      "winrate": 33.33333333333333,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 17,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 46,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 16,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 47,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 14,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 48,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 22,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 49,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 16,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 50,
+      "winrate": 29.365079365079367,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 11,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -13,
+        "thresh_rec": 47,
+        "thresh_watch": 20,
+        "rs_min": -4.4
+      }
+    },
+    {
+      "iter": 51,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 52,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 19,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 53,
+      "winrate": 33.33333333333333,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 4,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 54,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -12,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 55,
+      "winrate": 33.33333333333333,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 57,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 56,
+      "winrate": 33.33333333333333,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 9,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 57,
+      "winrate": 33.33333333333333,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 59,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 58,
+      "winrate": 37.77777777777778,
+      "weights": {
+        "w_pattern": 21,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -15,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 59,
+      "winrate": 40.0,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 15,
+        "w_drawdown": 15,
+        "w_turnover": 10,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -17,
+        "thresh_rec": 51,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    },
+    {
+      "iter": 60,
+      "winrate": 33.40643274853801,
+      "weights": {
+        "w_pattern": 20,
+        "w_weekly": 14,
+        "w_drawdown": 15,
+        "w_turnover": 15,
+        "w_rs": 15,
+        "w_overbought": -15,
+        "w_overtrade": -18,
+        "thresh_rec": 33,
+        "thresh_watch": 20,
+        "rs_min": -5
+      }
+    }
+  ]
+}

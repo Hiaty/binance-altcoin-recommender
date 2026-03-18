@@ -2,10 +2,40 @@
 币安山寨币智能推荐系统 - 分析模块 v2
 改进：
   B. 加入市场情绪因子（BTC 趋势 + Fear & Greed）
+  C. 自动加载 Goal-Driven 优化后的权重
 """
 
 import numpy as np
+import json
+import os
 from datetime import datetime
+
+# ── 加载优化权重（如果存在）────────────────────────────────────────
+_WEIGHTS_FILE = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+    "data", "best_weights.json"
+)
+
+_DEFAULT_WEIGHTS = {
+    "w_pattern": 20, "w_weekly": 15, "w_drawdown": 15,
+    "w_turnover": 10, "w_rs": 15,
+    "w_overbought": -15, "w_overtrade": -15,
+    "thresh_rec": 40, "thresh_watch": 20, "rs_min": -5,
+}
+
+def _load_weights():
+    try:
+        if os.path.exists(_WEIGHTS_FILE):
+            with open(_WEIGHTS_FILE) as f:
+                data = json.load(f)
+            w = data.get("weights", _DEFAULT_WEIGHTS)
+            print(f"[analyzer] 已加载优化权重（胜率 {data.get('best_winrate','?')}%）")
+            return w
+    except Exception:
+        pass
+    return _DEFAULT_WEIGHTS
+
+WEIGHTS = _load_weights()
 
 
 def analyze_kline_pattern(klines):
@@ -132,22 +162,30 @@ def analyze_token(token_data, sentiment=None):
         whale_signals.append("深V反弹")
     is_whale = len(whale_signals) >= 2
 
+    # ── 相对强弱 vs BTC ──
+    btc_ret_7d = 0
+    if sentiment:
+        btc = sentiment.get("btc", {})
+        btc_ret_7d = btc.get("change_24h", 0) * 3   # 用 24h 涨幅粗略估算 7 日趋势
+    rs = price_chg_week - btc_ret_7d   # 本币 7 日收益 - BTC 7 日收益
+
     # ── 基础评分 ──
     buy_score     = 0
     buy_reasons   = []
     not_buy_reasons = []
+    W = WEIGHTS
 
     if daily_pattern["strength"] > 60:
-        buy_score += 20
+        buy_score += W["w_pattern"]
         buy_reasons.append("日线强势")
     if weekly_pattern["strength"] > 60:
-        buy_score += 15
+        buy_score += W["w_weekly"]
         buy_reasons.append("周线向好")
     if max_drawdown > 50 and price_chg_week > 0:
-        buy_score += 15
+        buy_score += W["w_drawdown"]
         buy_reasons.append("回调充分")
     if 5 < turnover_rate < 50:
-        buy_score += 10
+        buy_score += W["w_turnover"]
         buy_reasons.append("换手健康")
     if net_inflow > 0:
         buy_score += 10
@@ -156,14 +194,22 @@ def analyze_token(token_data, sentiment=None):
         buy_score += 10
         buy_reasons.append("筹码分散")
 
+    # 相对强弱加分
+    rs_score = int(W["w_rs"] * min(max(rs / 20, -1), 1))
+    buy_score += rs_score
+    if rs > W.get("rs_min", -5):
+        buy_reasons.append(f"强于BTC({rs:+.1f}%)")
+    else:
+        not_buy_reasons.append(f"弱于BTC({rs:+.1f}%)")
+
     if max_drawdown < 20:
-        buy_score -= 15
+        buy_score += W["w_overbought"]
         not_buy_reasons.append("涨幅过大")
     if holders_top10 > 90:
         buy_score -= 20
         not_buy_reasons.append("高度控盘")
     if turnover_rate > 100:
-        buy_score -= 15
+        buy_score += W["w_overtrade"]
         not_buy_reasons.append("换手过高")
 
     # ── B. 市场情绪叠加 ──
@@ -197,9 +243,9 @@ def analyze_token(token_data, sentiment=None):
     # 大盘暴跌时，把所有"推荐"降为"观望"
     market_ok = sentiment.get("market_ok", True) if sentiment else True
 
-    if buy_score >= 40 and market_ok:
+    if buy_score >= W["thresh_rec"] and market_ok:
         recommendation = "推荐"
-    elif buy_score >= 20:
+    elif buy_score >= W["thresh_watch"]:
         recommendation = "观望"
     else:
         recommendation = "不推荐"
