@@ -8,7 +8,7 @@ class Config:
     """配置类"""
     # 服务配置
     HOST = '0.0.0.0'
-    PORT = 5000
+    PORT = 5001
     DEBUG = True
     
     # 币安API配置

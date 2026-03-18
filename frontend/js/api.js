@@ -1,48 +1,30 @@
 /**
- * API调用模块
+ * API 调用模块 v2
  */
 
-const API_BASE = '';
-
 const api = {
-    /**
-     * 执行分析
-     */
     async analyze(params) {
-        // 添加时间戳防止缓存
-        const timestamp = new Date().getTime();
-        const response = await fetch(`${API_BASE}/api/analyze?t=${timestamp}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache'
-            },
-            body: JSON.stringify(params)
+        const ts = Date.now();
+        const resp = await fetch(`/api/analyze?t=${ts}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Cache-Control": "no-cache" },
+            body: JSON.stringify(params),
         });
-        return response.json();
+        return resp.json();
     },
 
-    /**
-     * 获取结果
-     */
+    async getSentiment() {
+        const resp = await fetch("/api/sentiment");
+        return resp.json();
+    },
+
+    async getBacktest() {
+        const resp = await fetch("/api/backtest");
+        return resp.json();
+    },
+
     async getResults() {
-        const response = await fetch(`${API_BASE}/api/results`);
-        return response.json();
+        const resp = await fetch("/api/results");
+        return resp.json();
     },
-
-    /**
-     * 获取币种列表
-     */
-    async getCoins() {
-        const response = await fetch(`${API_BASE}/api/coins`);
-        return response.json();
-    },
-
-    /**
-     * 生成图表
-     */
-    async generateChart() {
-        const response = await fetch(`${API_BASE}/api/chart`);
-        return response.json();
-    }
 };
